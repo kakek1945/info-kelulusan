@@ -306,6 +306,30 @@
             background: rgba(255,255,255,0.1);
             transform: translateX(-4px);
         }
+        
+        .time-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px 10px;
+            width: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .time-box span {
+            font-size: 26px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .time-box small {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
 
         /* Spesifik HP Responsive 📱 */
         @media (max-width: 480px) {
@@ -336,21 +360,48 @@
             <h1>SMP Negeri 1 Merbau</h1>
             <p class="subtitle">Silakan ketik 10 digit NISN Anda untuk melihat hasil kelulusan tahun ajaran ini.</p>
 
-            <form action="{{ route('check') }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <input type="text" inputmode="numeric" id="nisn-input" name="nisn" class="form-control" placeholder="Nomor NISN Anda" value="{{ old('nisn') }}" required autocomplete="off" autofocus>
-                    @error('nisn')
-                        <span class="error-msg">{{ $message }}</span>
-                    @enderror
+            @if(isset($announcement_time) && \Carbon\Carbon::parse($announcement_time)->isFuture())
+                <div id="countdown-wrapper" style="margin: 30px 0;">
+                    <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; font-weight: 600;">Waktu Tersisa Menuju Pengumuman</div>
+                    <div style="display: flex; justify-content: center; gap: 12px;">
+                        <div class="time-box"><span id="days">00</span><small>HARI</small></div>
+                        <div class="time-box"><span id="hours">00</span><small>JAM</small></div>
+                        <div class="time-box"><span id="minutes">00</span><small>MNT</small></div>
+                        <div class="time-box"><span id="seconds">00</span><small>DTK</small></div>
+                    </div>
                 </div>
-                <button type="submit" class="btn-submit">
-                    <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        Cari Data Kelulusan
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                    </span>
-                </button>
-            </form>
+                <script>
+                    var countDownDate = new Date("{{ \Carbon\Carbon::parse($announcement_time)->toIso8601String() }}").getTime();
+                    var x = setInterval(function() {
+                        var distance = countDownDate - new Date().getTime();
+                        if (distance < 0) {
+                            clearInterval(x);
+                            window.location.reload();
+                        } else {
+                            document.getElementById("days").innerText = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                            document.getElementById("hours").innerText = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                            document.getElementById("minutes").innerText = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                            document.getElementById("seconds").innerText = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+                        }
+                    }, 1000);
+                </script>
+            @else
+                <form action="{{ route('check') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <input type="text" inputmode="numeric" id="nisn-input" name="nisn" class="form-control" placeholder="Nomor NISN Anda" value="{{ old('nisn') }}" required autocomplete="off" autofocus>
+                        @error('nisn')
+                            <span class="error-msg">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            Cari Data Kelulusan
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                        </span>
+                    </button>
+                </form>
+            @endif
             @endif
 
             @if(isset($searched))

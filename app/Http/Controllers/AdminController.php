@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Student;
+use App\Models\Setting;
 
 class AdminController extends Controller
 {
@@ -70,6 +72,7 @@ class AdminController extends Controller
         $callback = function() use ($columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns, ','); // Use comma as standard CSV
+            fputcsv($file, ['AWALAN-NOL', 'Contoh: Jika NISN adalah 0123456789 (10 digit), biarkan CSV-nya angka saja karena sistem akan menambal sendiri nol-nya secara otomatis jika Excel menghapusnya!'], ',');
             fputcsv($file, ['1234567891', 'Contoh Siswa Lulus', 'Lulus', 'Selamat anda lulus!'], ',');
             fputcsv($file, ['1234567892', 'Contoh Siswa Gagal', 'Tidak Lulus', 'Mohon maaf anda tidak lulus.'], ',');
             fclose($file);
@@ -111,8 +114,9 @@ class AdminController extends Controller
                 ];
                 $finalStatus = $statusMap[strtolower($rawStatus)] ?? 'Lulus';
 
+                $nisn_str = str_pad(trim($row[0]), 10, '0', STR_PAD_LEFT);
                 Student::updateOrCreate(
-                    ['nisn' => trim($row[0])],
+                    ['nisn' => $nisn_str],
                     [
                         'name' => trim($row[1]),
                         'status' => $finalStatus,
@@ -124,5 +128,45 @@ class AdminController extends Controller
         }
 
         return redirect()->route('admin.index')->with('success', "$count Data siswa berhasil di-import dari file Excel/CSV!");
+    }
+
+    public function settings()
+    {
+        $announcement_time = Setting::getValue('announcement_time');
+        return view('admin.settings', compact('announcement_time'));
+    }
+
+    public function updateTimer(Request $request)
+    {
+        $request->validate([
+            'announcement_time' => 'nullable|date'
+        ]);
+
+        Setting::updateOrCreate(
+            ['key' => 'announcement_time'],
+            ['value' => $request->announcement_time]
+        );
+
+        return redirect()->route('admin.settings')->with('success', 'Waktu pengumuman berhasil diperbarui.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini tidak cocok']);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        return redirect()->route('admin.settings')->with('success', 'Password admin berhasil diubah.');
     }
 }
