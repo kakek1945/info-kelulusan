@@ -16,3 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+
+if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'production') {
+    $app->useStoragePath('/tmp/storage');
+    @mkdir('/tmp/storage/framework/views', 0777, true);
+    @mkdir('/tmp/storage/framework/cache', 0777, true);
+    @mkdir('/tmp/storage/logs', 0777, true);
+}
+
+return $app;
