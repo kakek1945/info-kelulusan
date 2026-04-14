@@ -66,6 +66,9 @@
 
         @media(max-width: 768px) {
             .dashboard-grid { grid-template-columns: 1fr; }
+            .navbar { flex-direction: column; padding: 16px; gap: 16px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .card { padding: 20px; }
         }
     </style>
 </head>

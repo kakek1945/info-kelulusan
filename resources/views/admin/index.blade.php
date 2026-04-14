@@ -108,6 +108,17 @@
 
         .alert { background: #dcfce7; color: #166534; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-weight: 500; display: flex; align-items: center; gap: 10px; border: 1px solid #bbf7d0;}
         .alert-error { background: #fee2e2; color: #991b1b; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-weight: 500; display: flex; align-items: center; gap: 10px; border: 1px solid #fecaca;}
+
+        @media(max-width: 768px) {
+            .navbar { flex-direction: column; padding: 16px; gap: 16px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .card { padding: 20px; }
+            .upload-area { flex-direction: column; gap: 20px; text-align: center; }
+            .upload-form-group { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+            input[type="file"] { margin: 0; width: 100%; }
+            .card-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+            .table-responsive { overflow-x: scroll; border: 1px solid var(--border-color); border-radius: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -144,11 +155,11 @@
 
         <div class="card">
             <div class="upload-area">
-                <form action="{{ route('admin.upload') }}" method="POST" enctype="multipart/form-data" style="display:flex; align-items:center;">
+                <form action="{{ route('admin.upload') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <div>
+                    <div class="upload-form-group">
                         <h4 style="margin: 0 0 8px 0; color:var(--text-main); font-size:16px;">Impor Data Massal Cepat</h4>
-                        <p style="color:var(--text-muted); font-size:13px; margin-bottom: 12px;">Format harus berupa .CSV (Dipisahkan koma/titik-koma)</p>
+                        <p style="color:var(--text-muted); font-size:13px; margin-bottom: 12px;">Format harus berupa .CSV</p>
                         <input type="file" name="file" accept=".csv" required>
                         <button type="submit" class="btn btn-success">Mulai Import</button>
                     </div>

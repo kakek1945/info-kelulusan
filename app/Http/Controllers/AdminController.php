@@ -78,7 +78,7 @@ class AdminController extends Controller
             fclose($file);
         };
 
-        return response()->stream($callback, 200, $headers);
+        return response()->streamDownload($callback, 'template-kelulusan.csv', $headers);
     }
 
     public function upload(Request $request)
