@@ -32,6 +32,8 @@
         "QUEUE_CONNECTION": "sync",
         "DB_CONNECTION": "pgsql",
         "VIEW_COMPILED_PATH": "/tmp",
-        "LOG_CHANNEL": "stderr"
+        "LOG_CHANNEL": "stderr",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php"
     }
 }
