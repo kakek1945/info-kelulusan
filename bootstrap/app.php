@@ -14,7 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->report(function (\Throwable $e) {
+            error_log("======= LARAVEL ORIGINAL ERROR =======");
+            error_log($e->getMessage());
+            error_log($e->getFile() . ':' . $e->getLine());
+            error_log("======================================");
+        });
     })->create();
 
 if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'production') {
