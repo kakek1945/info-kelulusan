@@ -14,15 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (\Throwable $e) {
-            echo "<div style='font-family:sans-serif; padding: 20px; background: #fff;'>";
-            echo "<h2>🚨 LARAVEL FATAL ERROR: </h2>";
-            echo "<p style='color:red; font-size:18px;'><b>" . $e->getMessage() . "</b></p>";
-            echo "<p><b>File:</b> " . $e->getFile() . "</p>";
-            echo "<p><b>Line:</b> " . $e->getLine() . "</p>";
-            echo "</div>";
-            exit;
-        });
+        //
     })->create();
 
 if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'production') {
