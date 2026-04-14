@@ -18,7 +18,7 @@ class GraduationController extends Controller
     public function check(Request $request)
     {
         $announcement_time = Setting::getValue('announcement_time');
-        if ($announcement_time && now() < \Carbon\Carbon::parse($announcement_time)) {
+        if (!empty($announcement_time) && now() < \Carbon\Carbon::parse($announcement_time)) {
              return redirect()->route('home');
         }
 

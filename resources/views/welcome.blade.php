@@ -360,7 +360,7 @@
             <h1>SMP Negeri 1 Merbau</h1>
             <p class="subtitle">Silakan ketik 10 digit NISN Anda untuk melihat hasil kelulusan tahun ajaran ini.</p>
 
-            @if(isset($announcement_time) && \Carbon\Carbon::parse($announcement_time)->isFuture())
+            @if(!empty($announcement_time) && \Carbon\Carbon::parse($announcement_time)->isFuture())
                 <div id="countdown-wrapper" style="margin: 30px 0;">
                     <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; font-weight: 600;">Waktu Tersisa Menuju Pengumuman</div>
                     <div style="display: flex; justify-content: center; gap: 12px;">
